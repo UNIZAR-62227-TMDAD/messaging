@@ -11,3 +11,5 @@ hs_err_pid*
 # cosas de gradle que no hace falta compartir
 .gradle/
 
+/build
+/bin
