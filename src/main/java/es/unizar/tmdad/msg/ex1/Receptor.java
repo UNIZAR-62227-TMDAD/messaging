@@ -39,7 +39,7 @@ public class Receptor {
 		channel.basicConsume(QUEUE_NAME, autoAck, consumer);
 
 		while (true) {
-			// bloquea hasta que llege un mensaje 
+			// bloquea hasta que llegue un mensaje 
 			QueueingConsumer.Delivery delivery = consumer.nextDelivery();
 			String message = new String(delivery.getBody());
 			System.out.println(" [x] Recibido '" + message + "'");
