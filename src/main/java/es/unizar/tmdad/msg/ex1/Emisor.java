@@ -13,7 +13,7 @@ import com.rabbitmq.client.MessageProperties;
  */
 public class Emisor {
 
-	private final static String QUEUE_NAME = "hola";   
+	private final static String QUEUE_NAME = "hola1";   
 
 	public static void main(String[] argv) throws Exception {
 		//  Creamos una conexión al broker RabbitMQ en localhost

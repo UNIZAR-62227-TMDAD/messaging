@@ -11,7 +11,7 @@ import com.rabbitmq.client.QueueingConsumer;
  */
 public class Receptor {
 
-	private final static String QUEUE_NAME = "hola";
+	private final static String QUEUE_NAME = "hola1";
 
 	public static void main(String[] argv) throws Exception {
 		//  Creamos una conexión al broker RabbitMQ en localhost
