@@ -34,6 +34,8 @@ public class Requestor {
 		connection = factory.newConnection();
 		// Con un solo canal
 		channel = connection.createChannel();
+        // Declaramos la cola para las peticiones
+		channel.queueDeclare(REQUEST_QUEUE_NAME, false, false, false, null);
 		// Creamos una cola "temporal" para las respuestas
 		// (nombre generado automáticamente,
 		// no durable y con autodelete (el broker RabbitMQ la
