@@ -63,7 +63,7 @@ public class Requestor {
 
 		String correlationId = UUID.randomUUID().toString();			
 		
-		BasicProperties props = new BasicProperties	.Builder()
+		BasicProperties props = new BasicProperties.Builder()
 				.correlationId(correlationId)
 				.replyTo(replyQueueName)
 				.contentEncoding("application/json") // Podemos indicar el content encoding
