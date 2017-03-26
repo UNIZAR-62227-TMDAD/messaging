@@ -11,13 +11,22 @@ import com.rabbitmq.client.QueueingConsumer;
  *
  */
 public class Receptor {
-
 	private final static String QUEUE_NAME = "hola";
+	private final static String ENV_AMQPURL_NAME = "CLOUDAMQP_URL";
 
 	public static void main(String[] argv) throws Exception {
-		//  Creamos una conexión al broker RabbitMQ en localhost
+		// Conexión al broker RabbitMQ broker (prueba en la URL de
+		// la variable de entorno que se llame como diga ENV_AMQPURL_NAME
+		// o sino en localhost)
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
+		String amqpURL = System.getenv().get(ENV_AMQPURL_NAME) != null ? System.getenv().get(ENV_AMQPURL_NAME) : "amqp://localhost";
+		try {
+			factory.setUri(amqpURL);
+		} catch (Exception e) {
+			System.out.println(" [*] AQMP broker not found in " + amqpURL);
+			System.exit(-1);
+		}
+		System.out.println(" [*] AQMP broker found in " + amqpURL);
 		Connection connection = factory.newConnection();
 		// Con un solo canal
 		Channel channel = connection.createChannel();
@@ -34,8 +43,6 @@ public class Receptor {
 		// El objeto consumer guardará los mensajes que lleguen
 		// a la cola QUEUE_NAME hasta que los usemos
 		QueueingConsumer consumer = new QueueingConsumer(channel);
-		// El segundo parámetro indica autoACK = true, se envían
-		// ACK automáticos en cuanto llega un mensajes desde la cola
 		channel.basicConsume(QUEUE_NAME, true, consumer);
 
 		while (true) {
