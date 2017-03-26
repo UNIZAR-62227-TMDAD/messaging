@@ -20,7 +20,8 @@ public class Requestor {
 		NONE
 	}
 
-	private final static String REQUEST_QUEUE_NAME = "request_queue";		
+	private final static String REQUEST_QUEUE_NAME = "request_queue";
+	private final static String ENV_AMQPURL_NAME = "CLOUDAMQP_URL";
 	
 	private Connection connection;
 	private QueueingConsumer consumer;
@@ -28,9 +29,18 @@ public class Requestor {
 	private String replyQueueName;	
 	
 	public Requestor() throws Exception {
-		// Creamos una conexión al broker RabbitMQ en localhost
+		// Conexión al broker RabbitMQ broker (prueba en la URL de
+		// la variable de entorno que se llame como diga ENV_AMQPURL_NAME
+		// o sino en localhost)
 		ConnectionFactory factory = new ConnectionFactory();
-		factory.setHost("localhost");
+		String amqpURL = System.getenv().get(ENV_AMQPURL_NAME) != null ? System.getenv().get(ENV_AMQPURL_NAME) : "amqp://localhost";
+		try {
+			factory.setUri(amqpURL);
+		} catch (Exception e) {
+			System.out.println(" [*] AQMP broker not found in " + amqpURL);
+			System.exit(-1);
+		}
+		System.out.println(" [*] AQMP broker found in " + amqpURL);
 		connection = factory.newConnection();
 		// Con un solo canal
 		channel = connection.createChannel();
