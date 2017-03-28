@@ -23,18 +23,18 @@ public class Replier {
 	public static void main(String[] argv) {
 		Connection connection = null;
 		try {
-		// Conexión al broker RabbitMQ broker (prueba en la URL de
-		// la variable de entorno que se llame como diga ENV_AMQPURL_NAME
-		// o sino en localhost)
-		ConnectionFactory factory = new ConnectionFactory();
-		String amqpURL = System.getenv().get(ENV_AMQPURL_NAME) != null ? System.getenv().get(ENV_AMQPURL_NAME) : "amqp://localhost";
-		try {
-			factory.setUri(amqpURL);
-		} catch (Exception e) {
-			System.out.println(" [*] AQMP broker not found in " + amqpURL);
-			System.exit(-1);
-		}
-		System.out.println(" [*] AQMP broker found in " + amqpURL);
+			// Conexión al broker RabbitMQ broker (prueba en la URL de
+			// la variable de entorno que se llame como diga ENV_AMQPURL_NAME
+			// o sino en localhost)
+			ConnectionFactory factory = new ConnectionFactory();
+			String amqpURL = System.getenv().get(ENV_AMQPURL_NAME) != null ? System.getenv().get(ENV_AMQPURL_NAME) : "amqp://localhost";
+			try {
+				factory.setUri(amqpURL);
+			} catch (Exception e) {
+				System.out.println(" [*] AQMP broker not found in " + amqpURL);
+				System.exit(-1);
+			}
+			System.out.println(" [*] AQMP broker found in " + amqpURL);
 			connection = factory.newConnection();
 			// Con un solo canal
 			Channel channel = connection.createChannel();
@@ -57,8 +57,8 @@ public class Replier {
 				// Ponemos como id de correlación de la respuesta, el id
 				// de correlación de la petición
 				BasicProperties replyProps = new BasicProperties.Builder()
-				.correlationId(props.getCorrelationId())
-				.build();
+					.correlationId(props.getCorrelationId())
+					.build();
 
 				try {
 					String reply = "";				
@@ -72,8 +72,8 @@ public class Replier {
 						reply = addSuffix(word);
 					} else {
 						throw new Exception("Comando desconocido. Una " + 
-								"implementación más completa pondría el mensaje recibido "+
-								"en un canal de mensaje inválido.");
+							"implementación más completa pondría el mensaje recibido "+
+							"en un canal de mensaje inválido.");
 					}							
 					System.out.println("Recibido comando petición " + command + " con parámetro " + word);
 					System.out.println("Con este id de correlación en la cabecera: " + props.getCorrelationId());
@@ -96,5 +96,3 @@ public class Replier {
 		}
 	}
 }
-
-

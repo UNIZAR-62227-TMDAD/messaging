@@ -64,10 +64,10 @@ public class Requestor {
 		String correlationId = UUID.randomUUID().toString();			
 		
 		BasicProperties props = new BasicProperties.Builder()
-				.correlationId(correlationId)
-				.replyTo(replyQueueName)
-				.contentEncoding("application/json") // Podemos indicar el content encoding
-				.build();
+			.correlationId(correlationId)
+			.replyTo(replyQueueName)
+			.contentEncoding("application/json") // Podemos indicar el content encoding
+			.build();
 			
 		// Hacer la petición
 		// Usamos el exchange por defecto, que enruta a la cola que le indicamos
