@@ -38,6 +38,6 @@ repositories {
 
 
 dependencies {    
-    compile('com.rabbitmq:amqp-client:3.4.1')    
+    compile('com.rabbitmq:amqp-client:4.11.3')
     compile('org.json:json:20090211')
 }
