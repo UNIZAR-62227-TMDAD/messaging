@@ -5,4 +5,4 @@ if [ -f "$PRIVATE_ENV_VARS_FILE" ];
 then   
    source "$PRIVATE_ENV_VARS_FILE"
 fi
-./gradlew --quiet -PmainClass=es.unizar.tmdad.msg.ex0.Emisor run
+./gradlew --quiet -PmC=es.unizar.tmdad.msg.ex0.Emisor run

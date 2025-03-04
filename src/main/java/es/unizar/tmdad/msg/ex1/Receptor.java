@@ -3,7 +3,7 @@ package es.unizar.tmdad.msg.ex1;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.QueueingConsumer;
+import com.rabbitmq.client.GetResponse;
 
 /**
  * Adaptado de <https://www.rabbitmq.com/tutorials/tutorial-one-java.html>
@@ -41,22 +41,20 @@ public class Receptor {
 		channel.queueDeclare(QUEUE_NAME, durable, false, false, null);
 		System.out.println(" [*] Esperando mensajes. CTRL+C para salir");
 
-		// El objeto consumer guardará los mensajes que lleguen
-		// a la cola QUEUE_NAME hasta que los usemos
-		QueueingConsumer consumer = new QueueingConsumer(channel);
 		// No queremos ACK automáticos
 		boolean autoAck = false;
-		channel.basicConsume(QUEUE_NAME, autoAck, consumer);
 
 		while (true) {
-			// bloquea hasta que llegue un mensaje 
-			QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-			String message = new String(delivery.getBody());
-			System.out.println(" [x] Recibido '" + message + "'");
-			// Hacemos un ACK explícito cuando hemos "procesado" el mensaje
-			// (el false indica que el ACK no es múltiple: solo cuenta
-			// para un mensaje concreto)
-			channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+			// pide un mensaje a la cola QUEUE_NAME
+			GetResponse delivery = channel.basicGet(QUEUE_NAME, autoAck);
+			if (delivery != null) {
+				String message = new String(delivery.getBody());
+				System.out.println(" [x] Recibido '" + message + "'");
+				// Hacemos un ACK explícito cuando hemos "procesado" el mensaje
+				// (el false indica que el ACK no es múltiple: solo cuenta
+				// para un mensaje concreto)
+				channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+			}
 		}
 	}
 }

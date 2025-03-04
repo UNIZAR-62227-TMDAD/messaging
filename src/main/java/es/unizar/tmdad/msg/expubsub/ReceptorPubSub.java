@@ -3,7 +3,7 @@ package es.unizar.tmdad.msg.expubsub;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.QueueingConsumer;
+import com.rabbitmq.client.GetResponse;
 
 /** 
  * @author Rubén Béjar <http://www.rubenbejar.com>
@@ -46,17 +46,14 @@ public class ReceptorPubSub {
 		
 		System.out.println(" [*] Esperando mensajes. CTRL+C para salir");
 
-		// El objeto consumer guardará los mensajes que lleguen
-		// a la cola queueName hasta que los usemos
-		QueueingConsumer consumer = new QueueingConsumer(channel);
-		// autoAck a true
-		channel.basicConsume(queueName, true, consumer);
-
 		while (true) {
-			// bloquea hasta que llege un mensaje 
-			QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-			String message = new String(delivery.getBody());
-			System.out.println(" [x] Recibido '" + message + "'");
+			// pide un mensaje a la cola queueName
+			// autoAck a True
+			GetResponse delivery = channel.basicGet(queueName, true);
+			if (delivery != null) {
+				String message = new String(delivery.getBody());
+				System.out.println(" [x] Recibido '" + message + "'");
+			}
 		}
 	}
 }

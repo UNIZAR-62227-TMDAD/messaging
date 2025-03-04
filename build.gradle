@@ -5,19 +5,19 @@ buildscript {
     }
 }
 
-apply plugin: 'java'
-apply plugin: 'eclipse'
 apply plugin: 'application'
 
 // Esta propiedad del plugin application indica donde está la clase
 // con el main de la aplicación. Como tenemos varias, la podemos
 // dejar dinámica. Así podemos usar:
-// `$ gradle -PmainClass=ClaseQueSea run` para
+// `$ gradle -PmC=ClaseQueSea run` para
 // ejecutar distintas clases que tengan main
-if (project.hasProperty("mainClass")) {
-    mainClassName = mainClass
-} else {
-    mainClassName = "ejemplo.Emisor"
+application {
+    if (project.hasProperty("mC")) {
+        mainClass = mC
+    } else {
+        mainClass = "ejemplo.Emisor"
+    }
 }
 
 // Necesario para ejecutar gradle run en consola con entrada de texto. 
@@ -27,7 +27,7 @@ run {
 }
 
 jar {
-    baseName = 'TMDIS-Rabbitmq'
+    archiveBaseName = 'TMDIS-Rabbitmq'
     version = '0.1.0'
 }
 
@@ -38,6 +38,6 @@ repositories {
 
 
 dependencies {    
-    compile('com.rabbitmq:amqp-client:4.11.3')
-    compile('org.json:json:20090211')
+    implementation('com.rabbitmq:amqp-client:5.24.0')
+    implementation('org.json:json:20240303')
 }

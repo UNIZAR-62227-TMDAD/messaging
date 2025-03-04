@@ -24,7 +24,6 @@ public class Requestor {
 	private final static String ENV_AMQPURL_NAME = "CLOUDAMQP_URL";
 	
 	private Connection connection;
-	private QueueingConsumer consumer;
 	private Channel channel;
 	private String replyQueueName;	
 	
@@ -50,11 +49,7 @@ public class Requestor {
 		// (nombre generado automáticamente,
 		// no durable y con autodelete (el broker RabbitMQ la
 		// borrará cuando ya no se use)).		
-		replyQueueName = channel.queueDeclare().getQueue(); 
-		// Creamos un objeto consumer para coger respuestas (luego 
-		// podremos leer mensajes usando p.ej. consumer.nextDelivery)
-		consumer = new QueueingConsumer(channel);
-	    channel.basicConsume(replyQueueName, true, consumer);
+		replyQueueName = channel.queueDeclare().getQueue();
 	}
 	
 	public String doRequest(CommandType commandChosen, String wordEntered) throws Exception {
@@ -80,13 +75,15 @@ public class Requestor {
 		// Esperar la respuesta
 		String reply = null;
 		while (true) {
-			QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-			// Si el id de correlación no fuera el que esperamos no 			
-			// saldríamos del bucle
-			if (delivery.getProperties().getCorrelationId().equals(correlationId)) {
-				// El contenido de la respuesta es un String
-				reply = new String(delivery.getBody(), "UTF-8");
-				break;
+			GetResponse delivery = channel.basicGet(replyQueueName, true);
+			if (delivery != null) {
+				// Si el id de correlación no fuera el que esperamos no
+				// saldríamos del bucle
+				if (delivery.getProps().getCorrelationId().equals(correlationId)) {
+					// El contenido de la respuesta es un String
+					reply = new String(delivery.getBody(), "UTF-8");
+					break;
+				}
 			}
 		}
 		

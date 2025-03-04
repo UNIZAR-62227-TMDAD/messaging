@@ -3,7 +3,7 @@ package es.unizar.tmdad.msg.ex0;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.QueueingConsumer;
+import com.rabbitmq.client.GetResponse;
 
 /**
  * Adaptado de <https://www.rabbitmq.com/tutorials/tutorial-one-java.html>
@@ -40,16 +40,14 @@ public class Receptor {
 		channel.queueDeclare(QUEUE_NAME, false, false, false, null);
 		System.out.println(" [*] Esperando mensajes. CTRL+C para salir");
 
-		// El objeto consumer guardará los mensajes que lleguen
-		// a la cola QUEUE_NAME hasta que los usemos
-		QueueingConsumer consumer = new QueueingConsumer(channel);
-		channel.basicConsume(QUEUE_NAME, true, consumer);
-
 		while (true) {
-			// bloquea hasta que llege un mensaje 
-			QueueingConsumer.Delivery delivery = consumer.nextDelivery();
-			String message = new String(delivery.getBody());
-			System.out.println(" [x] Recibido '" + message + "'");
+			// pide un mensaje a la cola QUEUE_NAME
+			// autoAck a True
+			GetResponse delivery = channel.basicGet(QUEUE_NAME, true);
+			if (delivery != null) {
+				String message = new String(delivery.getBody());
+				System.out.println(" [x] Recibido '" + message + "'");
+			}
 		}
 	}
 }
